@@ -32,8 +32,8 @@ size_t epsi_start = cte_start + N;
 size_t delta_start = epsi_start + N;
 size_t a_start = delta_start + N - 1;
 
-const int cte_w = 900;
-const int epsi_w = 900;
+const int cte_w = 800;
+const int epsi_w = 800;
 const float v_w = 0.1;
 const int steering_w = 1000;
 const float accel_w = 1;

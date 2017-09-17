@@ -3,6 +3,9 @@ Self-Driving Car Engineer Nanodegree Program
 
 ## Implementation
 
+### Results
+See the result of this implementation [here](https://youtu.be/VSGNypxmx4U).
+
 ### The Model
 The MPC model consists of 4 variables in our state.
 
@@ -50,6 +53,7 @@ After we convert the waypoints in vehicle coordinates, we use the polyfit functi
 
 ### MPC with Latency
 In this simulation, latency of 100ms was used to mimic the real life delay between calculation and actuation in the vehicle.  In real life, when the measurement is taken from sensors and processed in the computer and ready to signal actuation, the vehicle has already moved into different state which makes the actuations not accurate.  Implementing the latency will compensate for this lost time between the processes so the system can be modeled with accuracy.
+
 ---
 
 ## Dependencies
