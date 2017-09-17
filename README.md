@@ -1,6 +1,55 @@
 # CarND-Controls-MPC
 Self-Driving Car Engineer Nanodegree Program
 
+## Implementation
+
+### The Model
+The MPC model consists of 4 variables in our state.
+
+* x = x position of the vehicle in global coordinate
+* y = y position of the vehicle in global coordinate
+* psi = orientation of the vehicle 
+* v = velocity of the vehicle
+
+The information is taken from the simulator directly through uWebSockets.
+
+In our MPC model, the actuators that had effect was wheel directions and engine speed which we represented as:
+
+* δ = steering angle of the vehicle
+* a = acceleration of the vehicle
+
+Another variable that we used in our model was the measure of the distance between the front of the vehicle and its center of gravity.
+
+* Lf = constant distance to CoG
+
+Now that we have all the variables in the state defined in our model, let's look at how to update them.
+
+* x_[t+1] = x[t] + v[t] * cos(psi[t]) * dt
+* y_[t+1] = y[t] + v[t] * sin(psi[t]) * dt
+* psi_[t+1] = psi[t] + v[t] / Lf * delta[t] * dt
+* v_[t+1] = v[t] + a[t] * dt
+* cte[t+1] = f(x[t]) - y[t] + v[t] * sin(epsi[t]) * dt
+* epsi[t+1] = psi[t] - psides[t] + v[t] * delta[t] / Lf * dt
+
+In addition to the previously mentioned variables in our state, two more update equations were used to update crosstrack error and orientation error. 
+
+### Time Step & Length
+The N value is the number of steps to look ahead to predict and dt is the elapsed time between each steps.  The product of N and dt results in T value which is the time frame that the model predicts ahead.  For example, if N is 20 and dt is 0.1, than the T will result in 2 seconds which means our model is predicting events upto 2 seconds out.  
+
+N value of 10 and dt value of 0.1 was used with N * dt = 1.  Our model will look ahead for 1 second as high speed and rapid turns makes looking further ahead meaningless in dramatically changing situations.  Few more test runs with different settings were tried with N = 20, dt = 0.05, T = 1 but that model was not as stable as the previous model.
+
+### Polymonial Fitting & MPC Preprocessing
+From the data package from uWebSocket, waypoints of x and y global coordinates are received and vector object is created.  Using the waypoints and the position of the vehicle in global coordinates, we convert the coordinates to vehicle coordinates to make our calculations easier in our future calculations.  
+
+* double dx = ptsx[i] - px;
+* double dy = ptsy[i] - py;
+* ptsx_agent[i] = dx * cos(-psi) - dy * sin(-psi);
+* ptsy_agent[i] = dx * sin(-psi) + dy * cos(-psi);
+
+After we convert the waypoints in vehicle coordinates, we use the polyfit function to fit the coordinates and extract coefficients which is used in polyeval function to calculate crosstrack error value and orientation error value.  
+
+### MPC with Latency
+In this simulation, latency of 100ms was used to mimic the real life delay between calculation and actuation in the vehicle.  In real life, when the measurement is taken from sensors and processed in the computer and ready to signal actuation, the vehicle has already moved into different state which makes the actuations not accurate.  Implementing the latency will compensate for this lost time between the processes so the system can be modeled with accuracy.
 ---
 
 ## Dependencies
